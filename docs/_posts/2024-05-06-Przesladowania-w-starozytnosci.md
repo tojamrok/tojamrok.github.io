@@ -3,6 +3,8 @@ layout: post
 title:  "Prześladowania w starożytności"
 ---
 
+![Prześladowania w starożytności](/assets/images/przesladowania-w-starozytnosci.webp)
+
 "Prześladowania w starożytności" są doskonałą bazą dla rozwinięcia namysłu nad prawidłami wielkich organizmów społecznych, politycznych, ideowych.
 
 W typowym kursie historii przeskakuje się od jednej wielkiej cywilizacji do drugiej, aby ukazać postęp i rosnącą potęgę rodzaju ludzkiego.  Tutaj opowieść zaczyna się od pierwotnych struktur społecznych starożytnej Grecji - początków naszej europejskiej cywilizacji - i już na ich temat ma coś do powiedzenia.  Paradoksalnie te braki cywilizacyjne i borykanie się ze skutkami tych braków przybliżają ówczesne państwa i społeczeństwa do współczesnych, również nie wolnych od istotnych strukturalnych bądź cywilizacyjnych braków.
