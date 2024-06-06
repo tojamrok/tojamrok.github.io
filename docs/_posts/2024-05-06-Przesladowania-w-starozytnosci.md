@@ -1,6 +1,8 @@
 ---
 layout: post
 title:  "Prześladowania w starożytności"
+excerpt: Książka o budowaniu złożonego społeczeństwa
+image: assets/images/przesladowania-w-starozytnosci-thumbnail.webp
 ---
 
 ![Prześladowania w starożytności](/assets/images/przesladowania-w-starozytnosci.webp)
