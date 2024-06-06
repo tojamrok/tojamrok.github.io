@@ -328,9 +328,14 @@ span.post-read-more a:hover {
     color: rgba(0, 0, 0, .8);
 }
 
+@font-face {
+  font-family: articlePostFont;
+  src: url(/assets/fonts/MontaguSlab_24pt-Light.woff);
+}
+
 .article-post {
-    font-family: Merriweather;
-    font-size: 1.1rem;
+    font-family: "articlePostFont", sherif;
+    font-size: 1.0rem;
     line-height: 1.84;
     color: rgba(0, 0, 0, .8);
 }
