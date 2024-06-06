@@ -2,9 +2,9 @@ markdown: kramdown
 title: tojamrok 
 email: <16987182+tojamrok@users.noreply.github.com>
 description: >- # this means to ignore newlines until "baseurl:"
-    tojamrok blog
+    toja blog
 baseurl: "" # the subpath of your site, e.g. /blog
-name: tojamrok blog
+name: toja blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 permalink: /blog/:year/:month/:day/:title
 logo: "assets/images/wyrak-small.jpg"
