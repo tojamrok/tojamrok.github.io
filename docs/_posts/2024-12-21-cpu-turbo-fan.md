@@ -121,9 +121,9 @@ I've tried it on the GOG version of HoMM3 but it didn't work due to the recent 2
 
 ## Non-closing words
 
-I really like the way the `HeroesGL` works, the source code is available on GitHub, with MIT license and it's clean.  I'd like to contact and express my gratitude to the author of the mod, Oleksiy Ryabchun.  And here the real world kicks in.  The binary version of the mod which I got from someone's Google Drive[^20],[^21] (VirusTotal is kind of OK with it[^22]) was created 2022-01-05.  Then the personal webpage of the author was collected by the `Wayback Machine` on 2022-01-20 and saved the content, but on 2022-03-02 the page was empty[^23] and the author is silent since then.  Since the invasion.
+I really like the way the `HeroesGL` works, the source code is available on GitHub, with MIT license and it's clean.  I'd like to contact and express my gratitude to the author of the mod, Oleksiy Ryabchun.  And here the real world kicks in.  The binary version of the mod which I got from someone's Google Drive[^20],[^21] (VirusTotal is kind of OK with it[^22]) was created 2022-01-05.  Soon after the personal webpage of the author was collected by the `Wayback Machine` on 2022-01-20 and it archived the content, but on 2022-03-02 the page was empty[^23] and the author is silent since then.  Since the invasion.
 
-And it struck me, wondering how to redeem the non ideal world.  Maybe paying due respect to works of persons such as [Maria Primachenko](https://en.uartlib.org/books/a-set-of-postcards-by-maria-primachenko/)[^24] and more generally the [Library Of Ukrainian Art](https://en.uartlib.org/exclusive/)[^25] would offset the damage, even if by tiny bit.
+And it struck me, wondering how to redeem the non ideal world.  Maybe paying due respect to works of persons such as [Maria Primachenko](https://en.uartlib.org/books/a-set-of-postcards-by-maria-primachenko/)[^24] and more generally the [Library Of Ukrainian Art](https://en.uartlib.org/exclusive/)[^25] would offset the damage, even if by tiny bit.  Her works fit the HoMM esthetics.
 
 ![Heroes of Might and Magic: A Strategic Quest, Castle Ironfist campaign map by Maria Primachenko](/assets/images/maria-primachenko-castle-ironfist.webp)
 *Heroes of Might and Magic: A Strategic Quest, Castle Ironfist campaign map by Maria Primachenko*
