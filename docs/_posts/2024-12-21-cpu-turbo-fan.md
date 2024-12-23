@@ -89,7 +89,7 @@ And it did work.  Disabling it made the computer use 3.5 Watts instead of 18 Wat
 
 Let that sink in:  3.5 W instead of 18 W.
 
-In the knowledge gathering and tuning process I also used a number of old performance monitoring friends: CPU-Z[^15], HWiNFO[^16].  Below you can see the Wattage and CPU temperature (no fan controller available so no sound dB graph) when running HoMM3 on CPU, fist with Turbo on battery and later plugged in;  then on CPU without boost first plugged in and later on battery:
+In the knowledge gathering and tuning process I also used a number of old performance monitoring friends: CPU-Z[^15], HWiNFO[^16].  Below you can see the Wattage and CPU temperature (no fan controller available so no sound dB graph) when running HoMM3 on CPU, first with Turbo on battery and later plugged in;  then on CPU without boost first plugged in and later on battery:
 
 ![HWiNFO, running HoMM3, CPU with boost](/assets/images/hwinfo-cpu-with-boost.webp)
 *HWiNFO, running Heroes of Might and Magic III, CPU with boost*
