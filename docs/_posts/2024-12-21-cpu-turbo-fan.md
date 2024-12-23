@@ -114,7 +114,7 @@ BOOL __stdcall PeekMessageHook(LPMSG lpMsg, HWND hWnd, UINT wMsgFilterMin, UINT 
 }
 ```
 
-I've tried it on the GOG version of HoMM3 but it didn't work due to the recent 2024-11-13 change which adds another level of indirection to the `DDraw.dll` with the `DDrawCompat`[^19].  Thankfully the GOG distributes the game with two binaries: `Heroes3.exe` which uses the `DDrawCompat` and `H3Blade.exe` which uses original `DDraw.dll`.  And the above code of the `HeroesGL` does fix the game run with by the `H3Blade.exe` executable:
+I've tried it on the GOG version of HoMM3 but it didn't work due to the recent 2024-11-13 change which adds another level of indirection to the `DDraw.dll` with the `DDrawCompat`[^19].  Thankfully the GOG distributes the game with two binaries: `Heroes3.exe` which uses the `DDrawCompat` and `H3Blade.exe` which uses original `DDraw.dll`.  And the above code of the `HeroesGL` does fix the game run with the `H3Blade.exe` executable:
 
 ![HWiNFO, running HoMM3 with HeroesGL fix, CPU regardless of boost](/assets/images/hwinfo-heroesgl.webp)
 *HWiNFO, running Heroes of Might and Magic III with HeroesGL fix, CPU regardless of boost*
