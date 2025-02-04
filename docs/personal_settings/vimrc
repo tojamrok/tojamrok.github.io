@@ -1,0 +1,289 @@
+set nocompatible
+source $VIMRUNTIME/vimrc_example.vim
+source $VIMRUNTIME/mswin.vim
+behave mswin
+
+
+set path+=~/source/mini
+"if has('gui_running')
+  " set guifont=LiberationMono:h11
+  set guifont=GohuFont:h14
+  "colorscheme moonfly
+  colorscheme darkblue
+"endif
+behave mswin
+colorscheme darkblue
+
+"set diffexpr=MyDiff()
+"function! MyDiff()
+"  "set guifont=Courier_New:h8::cEASTEUROPE
+"  let opt = '-a --binary '
+"  if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
+"  if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
+"  let arg1 = v:fname_in
+"  if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
+"  let arg2 = v:fname_new
+"  if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
+"  let arg3 = v:fname_out
+"  if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
+"  let eq = ''
+"  if $VIMRUNTIME =~ ' '
+"    if &sh =~ '\<cmd'
+"      let cmd = '""' . $VIMRUNTIME . '\diff"'
+"      let eq = '"'
+"    else
+"      let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
+"    endif
+"  else
+"    let cmd = $VIMRUNTIME . '\diff'
+"  endif
+"  silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . eq
+"endfunction
+
+
+set autoread
+set tabstop=4
+set shiftwidth=4
+set expandtab
+"set guifont=Courier_New:h10::cEASTEUROPE
+"set encoding=iso-8859-2
+"set encoding=cp1250
+"set encoding=utf-8
+"set background=dark
+"colorscheme calmar256-dark
+"set background=dark
+"colorscheme torte
+set ignorecase
+set smartcase
+set clipboard=unnamed               "yank also to gui clipboard
+
+syntax on
+filetype on
+filetype indent on
+filetype plugin on
+
+"compiler ruby
+
+:highlight Pmenu      term=NONE cterm=NONE ctermfg=7 ctermbg=5 gui=NONE guifg=LightGray guibg=DarkBlue
+:highlight PmenuSel   term=NONE cterm=NONE ctermfg=0 ctermbg=7 gui=NONE guifg=White guibg=DarkGray
+:highlight PmenuSbar  term=NONE cterm=NONE ctermfg=7 ctermbg=0 gui=NONE guifg=LightGray guibg=DarkBlue
+:highlight PmenuThumb term=NONE cterm=NONE ctermfg=0 ctermbg=7 gui=NONE guifg=Black guibg=DarkGray
+
+map <C-F12> :!ctags --c++-kinds=+p --fields=+iaS --extra=+qf --languages=+c++ --exclude=.svn --languages=-JavaScript,-SQL -R --extra=+f -R .\*<CR>
+
+:set foldmarker=/*,*/
+:set foldmethod=marker
+
+"klawisze kursora operuja na liniach ekranu, zamiast na liniach bufora
+"(roznica w przypadku dlugich linii)
+noremap <Up> gk
+noremap <Down> gj
+" MacOS, dodaj <Insert> jako wejście w tryb insert:
+nnoremap <Help> <Esc>i
+
+"mini buffer window
+let g:miniBufExplMapCTabSwitchBufs = 1
+let g:miniBufExplUseSingleClick = 1
+
+"NotifyListeners
+"nnoremap :CD :VSTreeExplore<CR>
+
+":command xml %s#\(.\)<Nul>#\1#g<CR>:%s#>#>\r#g<CR>gg=G
+":cmap xml %s#\(.\)<Nul>#\1#g<CR>:%s#>#>\r#g<CR>gg=G
+function! Xml()
+	:execute "1,$s#\\(.\\)\<NL>#\\1#g"
+	:execute "%s#>#>\r#g"
+	:normal gg=G
+endfunction
+
+:set browsedir=buffer
+
+" dla fugitive:
+set directory+=,~/tmp,$TMP
+
+" aby szybko edytowa duze pliki, wylacz podswietlanie i undo
+" Protect large files from sourcing and other overhead.
+" Files become read only
+if !exists("my_auto_commands_loaded")
+    let my_auto_commands_loaded = 1
+    " Set options:
+    "     eventignore+=FileType (no syntax highlighting etc
+    "            assumes FileType always on)
+    "       noswapfile (save copy of file)
+    "       bufhidden=unload (save memory when other file is viewed)
+    "       buftype=nowritefile (is read-only)
+    "       undolevels=-1 (no undo possible)
+    let g:LargeFile = 1024 * 1024 * 10
+    augroup LargeFile
+        "autocmd BufReadPre * let f=expand("<afile>") | if getfsize(f) > g:LargeFile | set eventignore+=FileType | setlocal noswapfile bufhidden=unload buftype=nowrite undolevels=-1 nowrap | else | set eventignore-=FileType | endif
+        "autocmd BufReadPre * let f=expand("<afile>") | if getfsize(f) > g:LargeFile | set eventignore+=FileType | setlocal noswapfile bufhidden=unload undolevels=-1 nowrap | else | set eventignore-=FileType | endif
+        "autocmd BufReadPre * let f=expand("<afile>") | if getfsize(f) > g:LargeFile | setlocal nowrap | else | endif
+        autocmd BufReadPre * let f=expand("<afile>") | if getfsize(f) > g:LargeFile | set eventignore+=FileType | setlocal noswapfile buftype=nowrite nowrap | else | set eventignore-=FileType | endif
+    augroup END
+endif
+
+"autocmd BufEnter * call CHANGE_CURR_DIR()
+
+function! Japonia()
+	:set guifont=Courier_New:h12::cSHIFTJIS
+	:set encoding=2byte-cp932
+endfunction
+
+function! Polska()
+	:set guifont=Courier_New:h10::cEASTEUROPE
+	:set encoding=cp1250
+endfunction
+
+function! Yaml()
+	:set nowrap
+	:set syntax=yaml
+endfunction
+command! Yaml :call Yaml()
+
+"use python as calculator
+command! -nargs=+ Calc :!python -c "from math import *; print <args>"
+
+let c_space_errors = 1
+
+"let g:HiMtchBrktOn= 1
+
+"set fileencoding=ucs-2le
+":au Filetype html,xml,xsl source $VIM/vimfiles/scripts/closetag.vim
+
+:set number
+set laststatus=2
+set statusline=%<%n:%f\ %h%m%r%{fugitive#statusline()}%=%-14.(\(0x%B\)%l,%c%V%)\ %P
+set guioptions+=f
+" Usage: %s/to replace/\=INC(step)/
+let g:I=0
+function! INC(increment)
+let g:I =g:I + a:increment
+return g:I
+endfunction
+
+command! -nargs=? -range Dec2hex call s:Dec2hex(<line1>, <line2>, '<args>')
+function! s:Dec2hex(line1, line2, arg) range
+  if empty(a:arg)
+    if histget(':', -1) =~# "^'<,'>" && visualmode() !=# 'V'
+      let cmd = 's/\%V\<\d\+\>/\=printf("0x%x",submatch(0)+0)/g'
+    else
+      let cmd = 's/\<\d\+\>/\=printf("0x%x",submatch(0)+0)/g'
+    endif
+    try
+      execute a:line1 . ',' . a:line2 . cmd
+    catch
+      echo 'Error: No decimal number found'
+    endtry
+  else
+    echo printf('%x', a:arg + 0)
+  endif
+endfunction
+
+command! -nargs=? -range Hex2dec call s:Hex2dec(<line1>, <line2>, '<args>')
+function! s:Hex2dec(line1, line2, arg) range
+  if empty(a:arg)
+    if histget(':', -1) =~# "^'<,'>" && visualmode() !=# 'V'
+      let cmd = 's/\%V0x\x\+/\=submatch(0)+0/g'
+    else
+      let cmd = 's/0x\x\+/\=submatch(0)+0/g'
+    endif
+    try
+      execute a:line1 . ',' . a:line2 . cmd
+    catch
+      echo 'Error: No hex number starting "0x" found'
+    endtry
+  else
+    echo (a:arg =~? '^0x') ? a:arg + 0 : ('0x'.a:arg) + 0
+  endif
+endfunction
+
+augroup CLIKE
+  highlight OverLength ctermbg=darkred ctermfg=white guibg=#890000
+augroup END
+
+" Detect if the current file type is a C-like language.
+au BufNewFile,BufRead *.c,*.h,*.cc,*.hh,*.cpp,*.hpp,*.objc,*.mm call SetupForCLang()
+ 
+" Configuration for C-like languages.
+function! SetupForCLang()
+    " Highlight lines longer than 80 characters.
+    " au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
+    " Alternately, uncomment these lines to wrap at 80 characters.
+    " setlocal textwidth=80
+    " setlocal wrap
+ 
+    " Use 2 spaces for indentation.
+    setlocal shiftwidth=2
+    setlocal tabstop=2
+    setlocal softtabstop=2
+    setlocal expandtab
+ 
+    " Configure auto-indentation formatting.
+    setlocal cindent
+    setlocal cinoptions=h1,l1,g1,t0,i4,+4,(0,w1,W4
+    setlocal indentexpr=GoogleCppIndent()
+    let b:undo_indent = "setl sw< ts< sts< et< tw< wrap< cin< cino< inde<"
+
+    match OverLength /\%>81v.\+\|\s\+$/
+    set colorcolumn=81
+    highlight ColorColumn ctermbg=lightgrey guibg=#003000
+   	au FileType c,cpp,cc,h nmap <F8> :set makeprg=c:/use/edit/Vim/cpplint.py\ %<CR>:make<CR>:copen<CR><CR>
+endfunction
+
+function! GoogleCppIndent()
+    let l:cline_num = line('.')
+
+    let l:orig_indent = cindent(l:cline_num)
+
+    if l:orig_indent == 0 | return 0 | endif
+
+    let l:pline_num = prevnonblank(l:cline_num - 1)
+    let l:pline = getline(l:pline_num)
+    if l:pline =~# '^\s*template' | return l:pline_indent | endif
+
+    " TODO: I don't know to correct it:
+    " namespace test {
+    " void
+    " ....<-- invalid cindent pos
+    "
+    " void test() {
+    " }
+    "
+    " void
+    " <-- cindent pos
+    if l:orig_indent != &shiftwidth | return l:orig_indent | endif
+
+    let l:in_comment = 0
+    let l:pline_num = prevnonblank(l:cline_num - 1)
+    while l:pline_num > -1
+        let l:pline = getline(l:pline_num)
+        let l:pline_indent = indent(l:pline_num)
+
+        if l:in_comment == 0 && l:pline =~ '^.\{-}\(/\*.\{-}\)\@<!\*/'
+            let l:in_comment = 1
+        elseif l:in_comment == 1
+            if l:pline =~ '/\*\(.\{-}\*/\)\@!'
+                let l:in_comment = 0
+            endif
+        elseif l:pline_indent == 0
+            if l:pline !~# '\(#define\)\|\(^\s*//\)\|\(^\s*{\)'
+                if l:pline =~# '^\s*namespace.*'
+                    return 0
+                else
+                    return l:orig_indent
+                endif
+            elseif l:pline =~# '\\$'
+                return l:orig_indent
+            endif
+        else
+            return l:orig_indent
+        endif
+
+        let l:pline_num = prevnonblank(l:pline_num - 1)
+    endwhile
+
+    return l:orig_indent
+endfunction
+
+au BufRead,BufNewFile *.csv,*.dat,*.tsv,*.tab set filetype=csv
+
