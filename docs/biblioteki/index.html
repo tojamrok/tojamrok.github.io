@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Bibliotek Publicznych - Wrocław</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        body { font-family: sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh; }
+        #map { height: 70%; width: 100%; border-bottom: 1px solid #ccc; }
+        .controls { padding: 15px; background-color: #f4f4f4; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .controls label { white-space: nowrap; }
+        #addressInput { flex-grow: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; min-width: 200px; }
+        #geocodeButton { padding: 8px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        #geocodeButton:hover { background-color: #0056b3; }
+        #status { padding: 5px 15px; font-style: italic; color: #555; min-height: 1.2em; }
+    </style>
+
+</head>
+<body>
+
+    <div id="map"></div>
+    <div class="controls">
+        <label for="addressInput" style="white-space: nowrap;">Nazwa, ulica lub nr filii biblioteki (Wrocław):</label>
+        <input type="text" id="addressInput" placeholder="np. Reja, 58, MBP Filia 1, Sztabowa 98 (rozdziel przecinkami)">
+        <button id="geocodeButton">Pokaż na mapie</button>
+    </div>
+    <div id="status" style="padding: 0 15px;"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+
+    <script>
+        const wroclawBoundsCoords = [
+            [51.00, 16.75],
+            [51.23, 17.25]
+        ];
+        const wroclawBounds = L.latLngBounds(wroclawBoundsCoords);
+        const initialZoom = 12;
+        const minMapZoom = 11;
+
+        var map = L.map('map', {
+            center: [51.1079, 17.0385], // Centrum Wrocławia
+            zoom: initialZoom,
+            minZoom: minMapZoom,
+            maxBounds: wroclawBounds,
+            maxBoundsViscosity: 1.0    // Opcjonalnie: sprawia, że granice są "twarde"
+        });
+
+        // Dodanie warstwy kafelków OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+
+
+        // Grupa warstw do przechowywania markerów
+        var markerGroup = L.layerGroup().addTo(map);
+
+        // Elementy DOM
+        const addressInput = document.getElementById('addressInput');
+        const geocodeButton = document.getElementById('geocodeButton');
+        const statusDiv = document.getElementById('status');
+
+        const wroclawViewbox = '16.80,51.21,17.22,51.02'; // lon_min, lat_max, lon_max, lat_min
+
+        // Funkcja do geokodowania zapytania W OBRĘBIE WROCŁAWIA
+        async function geocodeAddress(query) {
+            const encodedQuery = encodeURIComponent(query);
+            const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodedQuery}&viewbox=${wroclawViewbox}&bounded=1`;
+
+            console.log(`Wysyłanie zapytania dla "${query}": ${url}`);
+
+            try {
+                statusDiv.textContent = `Szukam we Wrocławiu: ${query}...`;
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'User-Agent': 'MapaBibliotekWroclaw/1.4 https://github.com/tojamrok/tojamrok.github.io/issues'
+                    }
+                });
+
+                if (!response.ok) {
+                    let errorBody = '';
+                    try { errorBody = await response.text(); } catch (e) {}
+                    console.error(`Błąd HTTP: ${response.status} ${response.statusText}. Treść: ${errorBody}`);
+                    throw new Error(`Błąd serwera: ${response.status} ${response.statusText}`);
+                }
+
+                const data = await response.json();
+
+                if (data && data.length > 0) {
+                    const result = data[0];
+                    console.log(`Znaleziono dla "${query}" (w obrębie Wrocławia):`, result);
+                    return {
+                        lat: parseFloat(result.lat),
+                        lon: parseFloat(result.lon),
+                        displayName: result.display_name,
+                        originalQuery: query
+                    };
+                } else {
+                    console.warn(`Nie znaleziono lokalizacji dla: "${query}" w obrębie Wrocławia (viewbox: ${wroclawViewbox}).`);
+                    return null;
+                }
+            } catch (error) {
+                console.error(`Błąd podczas geokodowania "${query}" we Wrocławiu:`, error);
+                statusDiv.textContent = `Błąd podczas szukania "${query}": ${error.message}.`;
+                return null;
+            }
+        }
+
+        async function handleGeocodeClick() {
+            const queriesString = addressInput.value;
+            if (!queriesString) {
+                statusDiv.textContent = 'Proszę wpisać zapytania.';
+                return;
+            }
+
+            const originalQueries = queriesString.split(',')
+                                                .map(q => q.trim())
+                                                .filter(q => q.length > 0);
+
+            if (originalQueries.length === 0) {
+                statusDiv.textContent = 'Proszę wpisać prawidłowe zapytania.';
+                return;
+            }
+
+            markerGroup.clearLayers();
+            statusDiv.textContent = 'Przetwarzam zapytania i rozpoczynam wyszukiwanie (Wrocław)...';
+
+            const locations = [];
+            let foundCount = 0;
+            let notFoundCount = 0;
+
+            for (const originalQuery of originalQueries) {
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                let queryToSend = originalQuery;
+                const lowerCaseQuery = originalQuery.toLowerCase();
+                const containsLibraryKeywords = lowerCaseQuery.includes('biblioteka') || lowerCaseQuery.includes('mbp') || lowerCaseQuery.includes('filia');
+
+                if (!containsLibraryKeywords) {
+                     console.log(`Zapytanie "${originalQuery}" nie zawiera słów kluczowych. Dodaję "biblioteka".`);
+                     queryToSend = "biblioteka " + originalQuery;
+                }
+
+                const location = await geocodeAddress(queryToSend);
+
+                if (location) {
+                    locations.push(L.latLng(location.lat, location.lon));
+                    const marker = L.marker([location.lat, location.lon])
+                                     .bindPopup(`<b>Szukano:</b> ${location.originalQuery}<br><b>Znaleziono:</b> ${location.displayName}`)
+                                     .addTo(markerGroup);
+                    foundCount++;
+                } else {
+                    notFoundCount++;
+                }
+                statusDiv.textContent = `Znaleziono (Wrocław): ${foundCount}, Nie znaleziono/poza Wrocławiem: ${notFoundCount}. Pozostało: ${originalQueries.length - foundCount - notFoundCount}...`;
+            }
+
+            if (locations.length > 0) {
+                const bounds = L.latLngBounds(locations);
+                 if (locations.length === 1) {
+                     if (wroclawBounds.contains(locations[0])) {
+                         map.setView(locations[0], 15);
+                     } else {
+                          console.warn("Znaleziony punkt jest poza zdefiniowanymi granicami mapy.", locations[0]);
+                          map.setView(wroclawBounds.getCenter(), initialZoom);
+                     }
+                 } else {
+                     // Upewnij się, że granice markerów mieszczą się w dozwolonych granicach mapy
+                     const fittedBounds = bounds.pad(0.1);
+                     map.fitBounds(fittedBounds.extend(wroclawBounds));
+                 }
+
+                statusDiv.textContent = `Zakończono. Znaleziono ${foundCount} z ${originalQueries.length} lokalizacji we Wrocławiu.`;
+                 if (notFoundCount > 0) {
+                     statusDiv.textContent += ` ${notFoundCount} zapytań nie dało wyniku w obrębie Wrocławia.`;
+                 }
+            } else {
+                statusDiv.textContent = 'Nie znaleziono żadnych pasujących lokalizacji dla podanych zapytań w obrębie Wrocławia.';
+            }
+        }
+
+        geocodeButton.addEventListener('click', handleGeocodeClick);
+        addressInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                handleGeocodeClick();
+            }
+        });
+    </script>
+
+</body>
+</html>
