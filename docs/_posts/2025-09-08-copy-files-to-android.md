@@ -31,7 +31,7 @@ Wydawałoby się, że [OpenMTP](https://openmtp.ganeshrvel.com) robi robotę, al
 ![OpenMTP](/assets/images/openmtp.webp)
 ![OpenMTP error](/assets/images/openmtp-error.webp)
 
-Da się zaprząc do akcji [adb](developer.android.com/tools/adb), ale jest to narzędzie programistyczne, więc zanim się go użyje, należy na Androidzie wykonać magiczne akcje UI-owe, a na kompie zainstalować gigabajty SDK-ów.  No i wymaga kabla, po parowanie po WiFi to kolejny bieg z przeszkodami.
+Da się zaprząc do akcji [adb](developer.android.com/tools/adb), ale jest to narzędzie programistyczne, więc zanim się go użyje, należy na Androidzie wykonać magiczne akcje UI-owe, a na kompie zainstalować gigabajty SDK-ów.  No i wymaga kabla, bo parowanie po WiFi to kolejny bieg z przeszkodami.
 
 ![Android Debug Bridge](/assets/images/adb.webp)
 
