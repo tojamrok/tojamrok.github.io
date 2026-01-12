@@ -1,0 +1,108 @@
+---
+layout: default
+---
+
+{% assign sorted_poems = site.poems | sort: "date" | reverse %}
+
+<p style="text-align: center">Powiedz <button id="przyjaciel">przyjacielu</button> i wejdź.</p>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-9 flex-first flex-md-unordered">
+            <div class="mainheading">
+
+                <div id="poems-list">
+                    {% for poem in sorted_poems %}
+                    {% assign date = poem.date | date: '%Y-%m-%d' %}
+                    {% assign encoded = poem.content | jsonify %}
+                    <div class="mb-3">
+                        <a href="#{{ date }}" style="font-weight: bold" data-encoded={{ encoded }}>...</a>
+                        <span class="text-muted"> – {{ date }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Single poem -->
+                {% for poem in sorted_poems %}
+                {% assign date = poem.date | date: '%Y-%m-%d' %}
+                {% assign encoded = poem.content | jsonify %}
+                {% assign prev_idx = forloop.index %}
+                {% assign next_idx = forloop.index | minus: 2 %}
+                {% assign prev = sorted_poems[prev_idx] %}
+                {% assign next = sorted_poems[next_idx] %}
+
+                <div class="poem-page" id="poem-{{ date }}" style="display:none;" data-encoded={{ encoded }}>
+                    <h1 class="poem-title"></h1>
+                    <div class="article-post poem-body" style="white-space: pre-wrap; text-align: justify;"></div>
+                    <p>
+                        <small>
+                            <span class="post-date"><time class="post-date" datetime="{{ date }}">{{ date }}</time></span>
+                        </small>
+                    </p>
+
+                    <div class="row PageNavigation d-flex justify-content-between font-weight-bold">
+                        {% if prev %}
+                        {% assign prev_date = prev.date | date: '%Y-%m-%d' %}
+                        {% assign prev_encoded = prev.content | jsonify %}
+                        <a class="prev d-block col-md-6" href="#{{ prev_date }}" data-encoded={{ prev_encoded }}>&laquo; <span class="nav-title">...</span></a>
+                        {% endif %}
+                        {% if next %}
+                        {% assign next_date = next.date | date: '%Y-%m-%d' %}
+                        {% assign next_encoded = next.content | jsonify %}
+                        <a class="next d-block col-md-6 text-lg-right" href="#{{ next_date }}" data-encoded={{ next_encoded }}><span class="nav-title">...</span> &raquo;</a>
+                        {% endif %}
+                        <div class="clearfix"></div>
+                    </div>
+
+                </div>
+                {% endfor %}
+                <!-- End single poem -->
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function rot13(str) {
+    return str.replace(/[a-zA-Z]/g, c =>
+        String.fromCharCode(c.charCodeAt(0) + (c.toLowerCase() < 'n' ? 13 : -13))
+    );
+}
+
+function decode(encoded) {
+    return rot13(encoded.replace(/\\n/g, '\n').replace(/\\"/g, '"'));
+}
+
+function decodeAll() {
+    document.querySelectorAll('[data-encoded]').forEach(el => {
+        const decoded = decode(el.dataset.encoded);
+        const title = decoded.split('\n')[0].trim();
+        const body = decoded.split('\n').slice(1).join('\n').trim();
+
+        if (el.classList.contains('poem-page')) {
+            el.querySelector('.poem-title').textContent = title;
+            el.querySelector('.poem-body').textContent = body;
+        } else if (el.querySelector('.nav-title')) {
+            el.querySelector('.nav-title').textContent = title;
+        } else {
+            el.textContent = title;
+        }
+    });
+}
+
+function handleHash() {
+    const hash = window.location.hash.slice(1);
+    const target = document.getElementById('poem-' + hash);
+    document.getElementById('poems-list').style.display = target ? 'none' : '';
+    document.querySelectorAll('.poem-page').forEach(el => el.style.display = 'none');
+    if (target) target.style.display = '';
+}
+
+window.addEventListener('hashchange', handleHash);
+handleHash();
+
+document.getElementById('przyjaciel').addEventListener('click', function() {
+    decodeAll();
+});
+</script>

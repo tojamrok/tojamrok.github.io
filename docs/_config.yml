@@ -10,6 +10,11 @@ permalink: /blog/:year/:month/:day/:title
 logo: "assets/images/wyrak-small.jpg"
 include: ["_pages"]
 
+collections:
+  poems:
+    output: false
+    markdown: false
+
 # Build settings
 theme: jekyll-theme-minimal
 plugins:
